@@ -1,0 +1,24 @@
+services:
+  tobacco-flavor-model:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tobacco-flavor-classifier
+    volumes:
+      # 数据文件挂载 - 将本地数据文件映射到容器
+      - ./backend/data:/app/data
+      # 输出目录挂载 - 保存分析报告和图表
+      - ./backend/output:/app/output
+      # 模型目录挂载 - 保存训练好的模型
+      - ./backend/models:/app/models
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MPLBACKEND=Agg
+    restart: "no"
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
