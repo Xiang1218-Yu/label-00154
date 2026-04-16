@@ -235,11 +235,17 @@ class DataPreprocessor:
             random_state=RANDOM_STATE
         )
         
-        # 为了提升结果可复现性，对特征子集按索引排序
-        # 注意：此处仅重排特征，不调整标签顺序
-        X_train = X_train.sort_index()
-        X_val = X_val.sort_index()
-        X_test = X_test.sort_index()
+        # 为了提升结果可复现性，对特征和标签按索引排序，确保样本一一对应
+        train_idx = X_train.index.sort_values()
+        val_idx = X_val.index.sort_values()
+        test_idx = X_test.index.sort_values()
+        
+        X_train = X_train.loc[train_idx]
+        y_train = y_train.loc[train_idx]
+        X_val = X_val.loc[val_idx]
+        y_val = y_val.loc[val_idx]
+        X_test = X_test.loc[test_idx]
+        y_test = y_test.loc[test_idx]
         
         print(f"数据集划分比例: 训练集:验证集:测试集 = {TRAIN_RATIO}:{VAL_RATIO}:{TEST_RATIO}")
         print(f"\n训练集大小: {len(X_train)} ({len(X_train)/len(X)*100:.1f}%)")
